@@ -12,8 +12,13 @@ def normal_histogram(n):
     plot a histogram with 10 bins (with labels + title),
     and return the generated data.
     """
-    pass
-
+    data = np.random.normal(0,1,n)
+    plt.hist(data, bins=10)
+    plt.xlabel("Values")
+    plt.ylabel("Frequencies")
+    plt.title("Normal Histogram")
+    plt.show()
+    return data
 
 def uniform_histogram(n):
     """
@@ -21,7 +26,13 @@ def uniform_histogram(n):
     plot a histogram with 10 bins (with labels + title),
     and return the generated data.
     """
-    pass
+    data = np.random.uniform(0,10,n)
+    plt.hist(data, bins=10)
+    plt.xlabel("Values")
+    plt.ylabel("Frequencies")
+    plt.title("Uniform distribution")
+    plt.show()
+    return data
 
 
 def bernoulli_histogram(n):
@@ -30,7 +41,13 @@ def bernoulli_histogram(n):
     plot a histogram with 10 bins (with labels + title),
     and return the generated data.
     """
-    pass
+    data = np.random.binomial(1, 0.5, n)
+    plt.hist(data, bins=10)
+    plt.xlabel("Values")
+    plt.ylabel("Frequencies")
+    plt.title("Bernoulli distribution")
+    plt.show()
+    return data
 
 
 # -----------------------------------
@@ -41,14 +58,16 @@ def sample_mean(data):
     """
     Compute sample mean.
     """
-    pass
+    return np.sum(data) / len(data)
 
 
 def sample_variance(data):
     """
     Compute sample variance using n-1 denominator.
     """
-    pass
+    n = len(data)
+    mean = sample_mean(data)
+    return np.sum((data - mean)**2) / (n - 1)
 
 
 # -----------------------------------
@@ -67,7 +86,33 @@ def order_statistics(data):
     Use a consistent quartile definition. The tests for the fixed
     dataset [5,1,3,2,4] expect Q1=2 and Q3=4.
     """
-    pass
+    arr = list(data)
+    n = len(arr)
+    
+    for i in range(n):
+        for j in range(0, n - i - 1):
+            if arr[j] > arr[j + 1]:
+                temp = arr[j]
+                arr[j] = arr[j + 1]
+                arr[j + 1] = temp
+
+    minimum = arr[0]
+    maximum = arr[-1]
+
+    #median
+    if n % 2 == 1:
+        median = arr[n // 2]
+    else:
+        median = (arr[n // 2 - 1] + arr[n // 2]) / 2
+
+    #quartiles
+    q1_index = n // 4
+    q3_index = (3 * n) // 4
+
+    q1 = arr[q1_index]
+    q3 = arr[q3_index]
+
+    return minimum, maximum, median, q1, q3
 
 
 # -----------------------------------
@@ -78,7 +123,14 @@ def sample_covariance(x, y):
     """
     Compute sample covariance using n-1 denominator.
     """
-    pass
+    x = np.array(x)
+    y = np.array(y)
+    
+    n = len(x)
+    mx = sample_mean(x)
+    my = sample_mean(y)
+    
+    return np.sum((x - mx)*(y - my)) / (n - 1)
 
 
 # -----------------------------------
@@ -91,4 +143,11 @@ def covariance_matrix(x, y):
         [[var(x), cov(x,y)],
          [cov(x,y), var(y)]]
     """
-    pass
+    cov_xy = sample_covariance(x, y)
+    var_x = sample_variance(np.array(x))
+    var_y = sample_variance(np.array(y))
+    
+    return np.array([
+        [var_x, cov_xy],
+        [cov_xy, var_y]
+    ])
